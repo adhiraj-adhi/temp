@@ -11,5 +11,13 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
+    defer-datasource-initialization: true # ensures Hibernate creates the tables before insertion via script.
+  sql:
+    init:
+      mode: always # tells Spring Boot to always execute SQL initialization scripts such as:
+
+#logging:
+#  level:
+#    org.springframework.jdbc.datasource.init: DEBUG

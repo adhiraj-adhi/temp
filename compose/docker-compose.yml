@@ -1,0 +1,29 @@
+services:
+  mysql:
+    image: "mysql:oraclelinux9"
+    container_name: "mysql_db"
+    ports:
+      - 4000:3306
+    environment:
+#      MYSQL_ROOT_USERNAME: "root"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: testdb
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  test:
+    image: test:1.0
+    container_name: "my_app"
+    ports:
+      - 9090:9090
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/testdb
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "root"
